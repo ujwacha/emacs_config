@@ -5,6 +5,12 @@
 This is my configuration of emacs
 The things work poroperly
 
+** How to use
+1) run the installer.sh script
+2) open the README.org file in ~/.emacs.d
+3) tangle it by M-x org-babel-tangle
+4) All done, you are set to go
+
 * Initial UI features
 these are the initial UI features, like removing the scroll bar, tool bar etc. Basically to make it look more GNU/Linuxy
 ** remove the startup page
