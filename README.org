@@ -362,6 +362,13 @@ it checks for errors blazingly fast
   :ensure t)
 #+END_SRC
 
+** magit
+magit is a git client, people say it's really good so i'm planning to test it out
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :ensure t)
+#+END_SRC
+
 * for LaTeX
 
 #+BEGIN_SRC elisp
