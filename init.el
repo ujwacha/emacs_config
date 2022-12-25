@@ -31,5 +31,3 @@
 ;; setup relative line number mode
 
 (menu-bar--display-line-numbers-mode-relative)
-
-

@@ -234,6 +234,9 @@
 (use-package flycheck
   :ensure t)
 
+(use-package magit
+  :ensure t)
+
 ;; (use-package auctex
 ;;   :ensure t
 ;;   :defer t
