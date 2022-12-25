@@ -9,7 +9,8 @@ The things work poroperly
 1) run the installer.sh script
 2) open the README.org file in ~/.emacs.d
 3) tangle it by M-x org-babel-tangle
-4) All done, you are set to go
+4) install all-the-icons fonts by M-x all-the-icons-install-fonts
+5) All done, you are set to go
 
 * Initial UI features
 these are the initial UI features, like removing the scroll bar, tool bar etc. Basically to make it look more GNU/Linuxy
