@@ -13,10 +13,11 @@
 
 (defvar runemacs/default-font-size 150)
 
-(set-face-attribute 'default nil :font "monospace" :height runemacs/default-font-size)
+;;(set-face-attribute 'default nil :font "monospace" :height runemacs/default-font-size)
 
 ;; Set the fixed pitch face
-;;(set-face-attribute 'fixed-pitch nil :font "Hack" :height 150)
+(set-face-attribute 'default nil :font "Hack Nerd Font" :height 150)
+;;(set-face-attribute 'fixed-pitch nil :font "Hack Nerd Font" :height 150)
 
 ;; Set the variable pitch face
 (set-face-attribute 'variable-pitch nil :font "Cantarell" :height 120 :weight 'regular)
@@ -80,9 +81,7 @@
   ;; Global settings (defaults)
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
- ;;(load-theme 'doom-acario-dark t) ;; the actual part where theme is loaded. make sure to install themes above here
- (load-theme 'doom-city-lights t) ;; the actual part where theme is loaded. make sure to install themes above here
- ;;(load-theme 'zenburn t)
+  (load-theme 'doom-dracula t)
 
 
 
@@ -119,6 +118,19 @@
 	 ("C-x C-f" . counsel-find-file)
 	 :map minibuffer-local-map
 	  ("C-r" . 'counsel-minibuffer-history)))
+
+;;  (use-package pdf-tools
+;;    :ensure t
+;;    :defer t
+;;    :commands (pdf-view-mode pdf-tools-install)
+;;    :mode ("\\.[pP][dD][fF]\\" . pdf-view-mode)
+;;    :config (pdf-tools-install)
+;;    (define-pdf-cache-function pagelabels)
+;;    :hook ((pdf-view-mode-hook . (lambda () (display-line-numbers-mode -q)))
+;;           (pdf-view-mode-hook . pdf-tools-enable-minor-modes)))
+
+(use-package howdoyou
+  :ensure t)
 
 (use-package evil
   :ensure t
@@ -177,8 +189,8 @@
   (add-hook 'prog-mode-hook 'yas-minor-mode)
   )
 
-(use-package vterm
- :ensure t)
+;; (use-package vterm
+;;  :ensure t)
 
 (use-package beacon)
 
@@ -237,6 +249,10 @@
 (use-package magit
   :ensure t)
 
+(use-package rainbow-mode
+  :ensure t
+  :init (rainbow-mode 1))
+
 ;; (use-package auctex
 ;;   :ensure t
 ;;   :defer t
@@ -244,6 +260,30 @@
 ;; 		    (lambda ()
 ;; 		      (push (list 'output-pdf "Zathura")
 ;; 			    TeX-view-program-selection))))
+
+(defun lsp-mode-setup ()
+  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  (lsp-headerline-breadcrumb-mode))
+
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :hook (lsp-mode . lsp-mode-setup)
+  :init
+  (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+  :config
+  (lsp-enable-which-key-integration t))
+
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode)
+  :custom
+  (lsp-ui-doc-position 'bottom))
+
+(use-package lsp-treemacs
+  :ensure t
+  :after lsp)
+
+(use-package lsp-ivy
+  :ensure t)
 
 (defun efs/org-mode-setup ()
   (org-indent-mode)
@@ -302,31 +342,10 @@
 (use-package visual-fill-column
   :hook (org-mode . efs/org-mode-visual-fill))
 
+;;  (use-package org-pdftools
+ ;;   :hook (org-load-hook . org-pdftools-setup-link))
+
 (use-package ox-reveal
-  :ensure t)
-
-(defun lsp-mode-setup ()
-  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
-  (lsp-headerline-breadcrumb-mode))
-
-(use-package lsp-mode
-  :commands (lsp lsp-deferred)
-  :hook (lsp-mode . lsp-mode-setup)
-  :init
-  (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
-  :config
-  (lsp-enable-which-key-integration t))
-
-(use-package lsp-ui
-  :hook (lsp-mode . lsp-ui-mode)
-  :custom
-  (lsp-ui-doc-position 'bottom))
-
-(use-package lsp-treemacs
-  :ensure t
-  :after lsp)
-
-(use-package lsp-ivy
   :ensure t)
 
 (use-package flycheck-rust
@@ -356,10 +375,10 @@
   ;; (setq lsp-eldoc-hook nil)
   ;; (setq lsp-enable-symbol-highlighting nil)
   ;; (setq lsp-signature-auto-activate nil)
-
   ;; comment to disable rustfmt on save
   (setq rustic-format-on-save t)
   ;;(add-hook 'rustic-mode-hook 'lsp)
+  ;;(add-hook 'rustic-mode-hook 'electric-part-local-mode)
   )
 
 (defun my/ide()
@@ -368,11 +387,40 @@
   (evil-window-split)
   (evil-window-down 1)
   (evil-window-decrease-height 10)
-  (vterm)
+  (eshell)
   (neotree)
   (evil-window-right 1)
   (lsp)
   )
+
+(global-set-key (kbd "C-h j") 'howdoyou-query)
+
+(defun my/run-the-c-code()
+  "run the c code via gcc"
+  (interactive)
+  (eshell-command (concat "gcc " (buffer-file-name) " && ./a.out"))
+  )
+(defun my/make()
+  "run the c code via gcc"
+  (interactive)
+  (eshell-command "make")
+  )
+
+
+(add-hook 'c-mode-common-hook (lambda()
+                                (local-set-key (kbd "C-c C-r C-c") 'my/run-the-c-code)
+                                (local-set-key (kbd "C-c C-r C-m") 'my/make)
+                                ))
+;;(add-hook 'c-mode-common-hook (local-set-key (kbd "C-c C-r") (eshell-command (concat "gcc " (buffer-file-name) " && ./a.out") )))
+
+(defun my/run-the-bash-code()
+  "run the bash code, NOTE: it gives executable permissions to the file (oviously)"
+  (interactive)
+  (eshell-command (concat "chmod +x " (buffer-file-name) " && bash " (buffer-file-name)))
+  )
+(add-hook 'sh-mode-hook (lambda() (local-set-key (kbd "C-c C-r")
+                                                 'my/run-the-bash-code
+                                                 )))
 
 (defun my/open-current-folder()
     "Open the folder your file currently is in"
@@ -383,7 +431,21 @@
 ;; set keybinding for this
   (global-set-key (kbd "C-x C-y") 'my/open-current-folder)
 
-(org-babel-do-load-languages
-  'org-babel-load-languages '((C . t)))
+(add-hook 'prog-mode-hook (lambda () (electric-pair-local-mode 1)))
 
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '(
+   (C . t)
+   (emacs-lisp . t)
+   (python . t)
+   )
+ )
 ;; custom keybindings
+
+;; (switch-to-buffer "orgscratch")
+;; (org-mode)
+;; (text-scale-adjust 2)
+;; (display-line-numbers-mode 0)
+;; (insert "* Notes")
+;; (switch-to-buffer "*scratch*")

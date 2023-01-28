@@ -1,16 +1,10 @@
 #+TITLE: Emacs Configuration
 #+PROPERTY: header-args :tangle orginit.el
+#+Author: Ujwol Acharya
 
 * Emacs Config
 This is my configuration of emacs
 The things work poroperly
-
-** How to use
-1) run the installer.sh script
-2) open the README.org file in ~/.emacs.d
-3) tangle it by M-x org-babel-tangle
-4) install all-the-icons fonts by M-x all-the-icons-install-fonts
-5) All done, you are set to go
 
 * Initial UI features
 these are the initial UI features, like removing the scroll bar, tool bar etc. Basically to make it look more GNU/Linuxy
@@ -28,6 +22,7 @@ these are the initial UI features, like removing the scroll bar, tool bar etc. B
 (scroll-bar-mode -1)
 (tooltip-mode 1)
 #+END_SRC
+
 ** Make emacs transparent
 
 #+BEGIN_SRC elisp
@@ -45,10 +40,11 @@ this is where font is configured
 
 (defvar runemacs/default-font-size 150)
 
-(set-face-attribute 'default nil :font "monospace" :height runemacs/default-font-size)
+;;(set-face-attribute 'default nil :font "monospace" :height runemacs/default-font-size)
 
 ;; Set the fixed pitch face
-;;(set-face-attribute 'fixed-pitch nil :font "Hack" :height 150)
+(set-face-attribute 'default nil :font "Hack Nerd Font" :height 150)
+;;(set-face-attribute 'fixed-pitch nil :font "Hack Nerd Font" :height 150)
 
 ;; Set the variable pitch face
 (set-face-attribute 'variable-pitch nil :font "Cantarell" :height 120 :weight 'regular)
@@ -146,12 +142,10 @@ _NOTE: the themes are loaded here so make sure to install themes above here_
     ;; Global settings (defaults)
     (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
           doom-themes-enable-italic t) ; if nil, italics is universally disabled
-   ;;(load-theme 'doom-acario-dark t) ;; the actual part where theme is loaded. make sure to install themes above here
-   (load-theme 'doom-city-lights t) ;; the actual part where theme is loaded. make sure to install themes above here
-   ;;(load-theme 'zenburn t)
+    (load-theme 'doom-dracula t)
 
 
- 
+
 
     ;; Enable flashing mode-line on errors
     ;;(doom-themes-visual-bell-config)
@@ -185,6 +179,7 @@ _NOTE: the themes are loaded here so make sure to install themes above here_
 (use-package ivy-rich
  :init (ivy-rich-mode 1))
 #+END_SRC
+
 ** properly setting up counsel
 #+BEGIN_SRC elisp
 (use-package counsel
@@ -196,6 +191,28 @@ _NOTE: the themes are loaded here so make sure to install themes above here_
 	 ("C-x C-f" . counsel-find-file)
 	 :map minibuffer-local-map
 	  ("C-r" . 'counsel-minibuffer-history)))
+#+END_SRC
+
+** pdf-tools
+make emacs a pdf viewer
+#+BEGIN_SRC emacs-lisp
+;;  (use-package pdf-tools
+;;    :ensure t
+;;    :defer t
+;;    :commands (pdf-view-mode pdf-tools-install)
+;;    :mode ("\\.[pP][dD][fF]\\" . pdf-view-mode)
+;;    :config (pdf-tools-install)
+;;    (define-pdf-cache-function pagelabels)
+;;    :hook ((pdf-view-mode-hook . (lambda () (display-line-numbers-mode -q)))
+;;           (pdf-view-mode-hook . pdf-tools-enable-minor-modes)))
+
+#+END_SRC
+
+** Howdoyou
+this package lets you search stack overflow and it's sister sites and get your results back in org mode. This Package seems to be really cool
+#+BEGIN_SRC emacs-lisp
+  (use-package howdoyou
+    :ensure t)
 #+END_SRC
 
 ** Evil Mode configuration
@@ -273,9 +290,10 @@ Everything here is for evil mode, make sure this is good
 ** virtual terminal
 A vertual terminal for emacs, I find it better than eshell
 #+BEGIN_SRC elisp
-(use-package vterm
- :ensure t)
+  ;; (use-package vterm
+  ;;  :ensure t)
 #+END_SRC
+
 ** becom mode
 it looks kinda cool
 #+BEGIN_SRC elisp
@@ -285,6 +303,7 @@ use beacon mode, comment if you think it's annoyingj
 #+BEGIN_SRC elisp
 ;;  (beacon-mode 1)
 #+END_SRC
+
 ** neotree to flex on vim users
 
 #+BEGIN_SRC elisp
@@ -305,6 +324,7 @@ use beacon mode, comment if you think it's annoyingj
   ([remap describe-variable] . counsel-describe-variable)
   ([remap describe-key] . helpful-key))
 #+END_SRC
+
 ** rainbow delimiters
 #+BEGIN_SRC elisp
 (use-package rainbow-delimiters
@@ -316,6 +336,7 @@ use beacon mode, comment if you think it's annoyingj
 (use-package markdown-mode 
   :ensure t)
 #+END_SRC
+
 ** simple-httpd
  for opening a web server at a spesefic directory because it is easier for me to make websites
  and also because i am too lazy to configure apache and stuff
@@ -376,6 +397,13 @@ magit is a git client, people say it's really good so i'm planning to test it ou
     :ensure t)
 #+END_SRC
 
+** rainbow-mode
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-mode
+    :ensure t
+    :init (rainbow-mode 1))
+#+END_SRC
+
 * for LaTeX
 
 #+BEGIN_SRC elisp
@@ -387,6 +415,54 @@ magit is a git client, people say it's really good so i'm planning to test it ou
 ;; 		      (push (list 'output-pdf "Zathura")
 ;; 			    TeX-view-program-selection))))
 #+END_SRC
+
+* LSP
+LSP is Language Server Protocol, this is what gives IDE features to Emacs
+** lsp mode
+initual lsp mode setup function
+#+BEGIN_SRC elisp
+(defun lsp-mode-setup ()
+  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  (lsp-headerline-breadcrumb-mode))
+
+#+END_SRC
+
+** Install lsp-mode and configure it using use-package
+#+BEGIN_SRC elisp
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :hook (lsp-mode . lsp-mode-setup)
+  :init
+  (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+  :config
+  (lsp-enable-which-key-integration t))
+
+#+END_SRC  
+
+** lsp ui
+IDK what it does, but it seems like it makes lsp look better
+#+BEGIN_SRC elisp
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode)
+  :custom
+  (lsp-ui-doc-position 'bottom))
+#+END_SRC
+
+** lsp treemacs
+LSP treemacs, IDK what it does, I just copied lol
+#+BEGIN_SRC elisp
+(use-package lsp-treemacs
+  :ensure t
+  :after lsp)
+#+END_SRC
+
+** lsp ivy
+I copied this as well, IDK what this does
+#+BEGIN_SRC elisp
+(use-package lsp-ivy
+  :ensure t)
+#+END_SRC
+
 * ORG configuration 
 this is for org mode, the greatest markdown format, i guess
 ** setting initial stuff up
@@ -445,6 +521,7 @@ IDK how the hell this works, i just copied this. I just wish this works
   ;;  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●"))
   )
 #+END_SRC
+
 ** configure org bullets
 #+BEGIN_SRC elisp
 (defun efs/org-mode-visual-fill ()
@@ -455,53 +532,17 @@ IDK how the hell this works, i just copied this. I just wish this works
 (use-package visual-fill-column
   :hook (org-mode . efs/org-mode-visual-fill))
 #+END_SRC
+
+** org pdf
+
+#+BEGIN_SRC elisp
+;;  (use-package org-pdftools
+ ;;   :hook (org-load-hook . org-pdftools-setup-link))
+#+END_SRC
+
 ** Org reveal for slideshow presentations
 #+BEGIN_SRC elisp
 (use-package ox-reveal
-  :ensure t)
-#+END_SRC
-
-* LSP
-LSP is Language Server Protocol, this is what gives IDE features to Emacs
-** lsp mode
-initual lsp mode setup function
-#+BEGIN_SRC elisp
-(defun lsp-mode-setup ()
-  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
-  (lsp-headerline-breadcrumb-mode))
-
-#+END_SRC
-** Install lsp-mode and configure it using use-package
-#+BEGIN_SRC elisp
-(use-package lsp-mode
-  :commands (lsp lsp-deferred)
-  :hook (lsp-mode . lsp-mode-setup)
-  :init
-  (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
-  :config
-  (lsp-enable-which-key-integration t))
-
-#+END_SRC  
-** lsp ui
-IDK what it does, but it seems like it makes lsp look better
-#+BEGIN_SRC elisp
-(use-package lsp-ui
-  :hook (lsp-mode . lsp-ui-mode)
-  :custom
-  (lsp-ui-doc-position 'bottom))
-#+END_SRC
-
-** lsp treemacs
-LSP treemacs, IDK what it does, I just copied lol
-#+BEGIN_SRC elisp
-(use-package lsp-treemacs
-  :ensure t
-  :after lsp)
-#+END_SRC
-** lsp ivy
-I copied this as well, IDK what this does
-#+BEGIN_SRC elisp
-(use-package lsp-ivy
   :ensure t)
 #+END_SRC
 
@@ -514,6 +555,7 @@ checks for errors in the buffer
 (use-package flycheck-rust
   :ensure t)
 #+END_SRC
+
 ** some random shit to make it work better
 
 yes
@@ -546,10 +588,10 @@ more advanced rust-mode which has some great features and added keybindings
     ;; (setq lsp-eldoc-hook nil)
     ;; (setq lsp-enable-symbol-highlighting nil)
     ;; (setq lsp-signature-auto-activate nil)
-
     ;; comment to disable rustfmt on save
     (setq rustic-format-on-save t)
     ;;(add-hook 'rustic-mode-hook 'lsp)
+    ;;(add-hook 'rustic-mode-hook 'electric-part-local-mode)
     )
 #+END_SRC  
 
@@ -564,12 +606,53 @@ user defined functions (starts with my/)
     (evil-window-split)
     (evil-window-down 1)
     (evil-window-decrease-height 10)
-    (vterm)
+    (eshell)
     (neotree)
     (evil-window-right 1)
     (lsp)
     )
-#+END_SRC  
+#+END_SRC
+
+** a keybinding for howdoyou
+#+BEGIN_SRC elisp
+  (global-set-key (kbd "C-h j") 'howdoyou-query)
+#+END_SRC
+
+** run gcc for c mode
+make a keybinding to run gcc to the opened file and run a.out
+#+BEGIN_SRC elisp
+  (defun my/run-the-c-code()
+    "run the c code via gcc"
+    (interactive)
+    (eshell-command (concat "gcc " (buffer-file-name) " && ./a.out"))
+    )
+  (defun my/make()
+    "run the c code via gcc"
+    (interactive)
+    (eshell-command "make")
+    )
+
+
+  (add-hook 'c-mode-common-hook (lambda()
+                                  (local-set-key (kbd "C-c C-r C-c") 'my/run-the-c-code)
+                                  (local-set-key (kbd "C-c C-r C-m") 'my/make)
+                                  ))
+  ;;(add-hook 'c-mode-common-hook (local-set-key (kbd "C-c C-r") (eshell-command (concat "gcc " (buffer-file-name) " && ./a.out") )))
+#+END_SRC
+
+** run shell scripts after making it executable
+repurposed the c mode keybinding to run shell scripts
+
+#+BEGIN_SRC elisp
+  (defun my/run-the-bash-code()
+    "run the bash code, NOTE: it gives executable permissions to the file (oviously)"
+    (interactive)
+    (eshell-command (concat "chmod +x " (buffer-file-name) " && bash " (buffer-file-name)))
+    )
+  (add-hook 'sh-mode-hook (lambda() (local-set-key (kbd "C-c C-r")
+                                                   'my/run-the-bash-code
+                                                   )))
+#+END_SRC
 
 ** open current directory the file is located in
 This is for quick nagivation
@@ -585,12 +668,37 @@ This is for quick nagivation
 
 #+END_SRC
 
+**  bracket completion in prog mode 
+Use electric pair mode or something in prog mode hook
+NOTE: Does not work rignt now, so not conna care
+#+BEGIN_SRC elisp
+  (add-hook 'prog-mode-hook (lambda () (electric-pair-local-mode 1)))
+#+END_SRC
+
 ** other random stuff
 #+BEGIN_SRC elisp
-   (org-babel-do-load-languages
-    'org-babel-load-languages '((C . t)))
-
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '(
+     (C . t)
+     (emacs-lisp . t)
+     (python . t)
+     )
+   )
   ;; custom keybindings
 
+#+END_SRC
+
+* End Stuff
+** Start a org document scratch buffer
+This is just me running one command after another to get what I want, i guess this is not very efficient
+Gonna give up for now, It didn't work properly
+#+BEGIN_SRC elisp
+  ;; (switch-to-buffer "orgscratch")
+  ;; (org-mode)
+  ;; (text-scale-adjust 2)
+  ;; (display-line-numbers-mode 0)
+  ;; (insert "* Notes")
+  ;; (switch-to-buffer "*scratch*")
 #+END_SRC
 
