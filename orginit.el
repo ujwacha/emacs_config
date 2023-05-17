@@ -5,9 +5,9 @@
 (scroll-bar-mode -1)
 (tooltip-mode 1)
 
-;;;; Make emacs transparent
-
-;;;;(set-frame-parameter (selected-frame) 'alpha '(93 93))
+;; set transparency
+;; (set-frame-parameter (selected-frame) 'alpha '(85 85))
+;; (add-to-list 'default-frame-alist '(alpha 85 85))
 
 ;; ;;;; fonts and stuff
 
@@ -71,31 +71,36 @@
 (use-package all-the-icons
   :ensure t)
 
-(use-package intellij-theme)
-(use-package kaolin-themes)
-(use-package zenburn-theme)
+;; (use-package intellij-theme)
+  ;;(use-package kaolin-themes)
+  ;;(use-package zenburn-theme)
+;;  (use-package spacemacs-theme)
+;; (use-package ewal-spacemacs-themes)
+(use-package ubuntu-theme)
 
 (use-package doom-themes
-  :ensure t
-  :config
-  ;; Global settings (defaults)
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-dracula t)
+          :ensure t
+          :config
+          ;; Global settings (defaults)
+          (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+                doom-themes-enable-italic t) ; if nil, italics is universally disabled
+      ;;    (load-theme ' spacemacs-dark t)
+         ;; (load-theme ' kaolin-dark t)
+        (load-theme 'doom-Iosvkem t)
+;;        (load-theme 'ubuntu t)
+  ;;        (load-theme 'doom-solarized-dark t)
 
 
-
-
-  ;; Enable flashing mode-line on errors
-  ;;(doom-themes-visual-bell-config)
-  ;; Enable custom neotree theme (all-the-icons must be installed!)
-  (doom-themes-neotree-config)
-  ;; or for treemacs users
-  ;;(setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
-  ;;(doom-themes-treemacs-config)
-  ;; Corrects (and improves) org-mode's native fontification.
-  ;;(doom-themes-org-config)
-  )
+          ;; Enable flashing mode-line on errors
+          (doom-themes-visual-bell-config)
+          ;; Enable custom neotree theme (all-the-icons must be installed!)
+          (doom-themes-neotree-config)
+          ;; or for treemacs users
+          (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+          (doom-themes-treemacs-config)
+          ;; Corrects (and improves) org-mode's native fontification.
+          (doom-themes-org-config)
+          )
 
 ;;(use-package rainbow-delimiters
 ;;  :hook (prog-mode , rainbow-delimiters-mode ))
@@ -189,8 +194,8 @@
   (add-hook 'prog-mode-hook 'yas-minor-mode)
   )
 
-;; (use-package vterm
-;;  :ensure t)
+(use-package vterm
+ :ensure t)
 
 (use-package beacon)
 
@@ -217,6 +222,57 @@
 
 (use-package simple-httpd
   :ensure t)
+
+;; Configure Elfeed
+(use-package elfeed
+  :ensure t
+  :config
+  (setq elfeed-db-directory (expand-file-name "elfeed" user-emacs-directory)
+        elfeed-show-entry-switch 'display-buffer)
+
+  (setq elfeed-search-filter "@6-months-ago +unread -lowy")
+  )
+
+(setq elfeed-feeds (quote(
+("https://archlinux.org/feeds/news/" linux arch news official)
+)))
+;; you can put your subs here like this
+
+(defun my/get-youtube-channel-rss-feed (link-to-channel-homepage)
+  "this takes the link to channel home page and spits out the rss feed"
+  (setq my-youtube-command (concat "curl -s " link-to-channel-homepage " | grep -oP '(?<=title\=\"RSS\" href\=\").*?(?=\")' "))
+  (setq my-shell-output
+        (substring 
+         (shell-command-to-string my-youtube-command )
+         0 -1))
+  my-shell-output
+  )
+
+;; (dolist (mode '(elfeed-show-mode-hook
+;;                 elfeed-search-mode-hook))
+;;   (add-hook mode (lambda () (turn-off-evil-mode))))
+
+(defun my/elfeed-open-link-in-mpv()
+  "open link in elfeed using mpv"
+  (interactive)
+  (let ((link (elfeed-entry-link elfeed-show-entry)))
+    (when link
+      (message "Sent to mpv: %s" link)
+      (async-shell-command (concat "mpv \"" link "\"")))))
+
+(add-to-list 'evil-motion-state-modes 'elfeed-search-mode)
+(add-to-list 'evil-motion-state-modes 'elfeed-show-mode)
+
+(evil-define-key* 'motion elfeed-search-mode-map
+  "gb" #'elfeed-search-browse-url
+  "gr" #'elfeed-search-update--force
+  "gR" #'elfeed-search-fetch)
+
+(evil-define-key* 'motion elfeed-show-mode-map
+  "gb" #'elfeed-show-visit
+  "gy" #'my/elfeed-open-link-in-mpv
+  "gj" #'elfeed-show-next
+  "gk" #'elfeed-show-prev)
 
 (use-package projectile
   :diminish projectile-mode
@@ -249,17 +305,40 @@
 (use-package magit
   :ensure t)
 
+(use-package gnuplot-mode)
+(use-package gnuplot)
+
 (use-package rainbow-mode
   :ensure t
   :init (rainbow-mode 1))
 
-;; (use-package auctex
-;;   :ensure t
-;;   :defer t
-;;   :hook (LaTeX-mode .
-;; 		    (lambda ()
-;; 		      (push (list 'output-pdf "Zathura")
-;; 			    TeX-view-program-selection))))
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook))
+
+(setq dashboard-center-content t)
+
+(setq dashboard-set-heading-icons t)
+(setq dashboard-set-file-icons t)
+
+(add-hook 'dashboard-mode-hook (lambda ()
+                                 (local-set-key (kbd "C-c C-r ") 'dashboard-refresh-buffer)))
+
+(setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+
+(use-package all-the-icons-dired
+  :ensure t
+  :hook (dired-mode . all-the-icons-dired-mode)
+  )
+
+(use-package auctex
+  :ensure t
+  :defer t
+  :hook (LaTeX-mode .
+                    (lambda ()
+                      (push (list 'output-pdf "Zathura")
+                            TeX-view-program-selection))))
 
 (defun lsp-mode-setup ()
   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
@@ -348,6 +427,12 @@
 (use-package ox-reveal
   :ensure t)
 
+(defun my/set_latex_math_size (size)
+  "set the required size of your math equations"
+    (interactive "sSize:")
+    (setq org-format-latex-options (plist-put org-format-latex-options :scale (string-to-number size)))
+    (message (concat "size is set to: " size)))
+
 (use-package flycheck-rust
   :ensure t)
 
@@ -387,7 +472,7 @@
   (evil-window-split)
   (evil-window-down 1)
   (evil-window-decrease-height 10)
-  (eshell)
+  (vterm)
   (neotree)
   (evil-window-right 1)
   (lsp)
@@ -422,16 +507,34 @@
                                                  'my/run-the-bash-code
                                                  )))
 
-(defun my/open-current-folder()
-    "Open the folder your file currently is in"
-    (interactive)
-    (find-file "./")
-    )
-
-;; set keybinding for this
-  (global-set-key (kbd "C-x C-y") 'my/open-current-folder)
-
 (add-hook 'prog-mode-hook (lambda () (electric-pair-local-mode 1)))
+
+(add-hook 'emacs-lisp-mode-hook (lambda ()
+                                  (company-mode 1)))
+
+(defun my/goto-thing ()
+  "put cursor to the string <+_+> and replace it"
+  (interactive)
+  (if (search-forward "<+_+>") (delete-backward-char 5) (message "pattern <+_+> not found"))
+  )
+
+(global-set-key (kbd "C-c C-SPC") 'my/goto-thing)
+
+(defun my/copy-all-and-kill()
+    (interactive)
+    (kill-region 1 (buffer-size))
+    (kill-buffer-and-window)
+  )
+
+(defun my/open-latex-buffer ()
+  (interactive)
+  (split-window)
+  (switch-to-buffer "*org-latex-thingy*")
+  (latex-mode)
+  (local-set-key (kbd "C-C C-;") 'my/copy-all-and-kill ))
+
+(add-hook 'org-mode-hook (lambda()
+                           (local-set-key (kbd "C-c C-.") 'my/open-latex-buffer)))
 
 (org-babel-do-load-languages
  'org-babel-load-languages

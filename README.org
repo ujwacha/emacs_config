@@ -1,6 +1,6 @@
 #+TITLE: Emacs Configuration
 #+PROPERTY: header-args :tangle orginit.el
-#+Author: Ujwol Acharya
+#+Author: Acharya U
 
 * Emacs Config
 This is my configuration of emacs
@@ -17,19 +17,18 @@ these are the initial UI features, like removing the scroll bar, tool bar etc. B
 
 ** my own confis to remove menu bar , scroll bar and tool bar
 #+BEGIN_SRC elisp
-(tool-bar-mode -1)
-(menu-bar-mode -1)
-(scroll-bar-mode -1)
-(tooltip-mode 1)
+  (tool-bar-mode -1)
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)
+  (tooltip-mode 1)
 #+END_SRC
 
 ** Make emacs transparent
 
 #+BEGIN_SRC elisp
-;;;; Make emacs transparent
-
-;;;;(set-frame-parameter (selected-frame) 'alpha '(93 93))
-
+  ;; set transparency
+  ;; (set-frame-parameter (selected-frame) 'alpha '(85 85))
+  ;; (add-to-list 'default-frame-alist '(alpha 85 85))
 #+END_SRC
 
 * Font configuration
@@ -127,36 +126,41 @@ use doom-modeline thingy
 ** other themes
 some other themes than doom themes
 #+BEGIN_SRC elisp
-(use-package intellij-theme)
-(use-package kaolin-themes)
-(use-package zenburn-theme)
+   ;; (use-package intellij-theme)
+    ;;(use-package kaolin-themes)
+    ;;(use-package zenburn-theme)
+  ;;  (use-package spacemacs-theme)
+  ;; (use-package ewal-spacemacs-themes)
+  (use-package ubuntu-theme)
 #+END_SRC
 
 ** doom themes
 doom themes to make emacs look sexy
 _NOTE: the themes are loaded here so make sure to install themes above here_
 #+BEGIN_SRC elisp
-  (use-package doom-themes
-    :ensure t
-    :config
-    ;; Global settings (defaults)
-    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-          doom-themes-enable-italic t) ; if nil, italics is universally disabled
-    (load-theme 'doom-dracula t)
+          (use-package doom-themes
+            :ensure t
+            :config
+            ;; Global settings (defaults)
+            (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+                  doom-themes-enable-italic t) ; if nil, italics is universally disabled
+        ;;    (load-theme ' spacemacs-dark t)
+           ;; (load-theme ' kaolin-dark t)
+          (load-theme 'doom-Iosvkem t)
+  ;;        (load-theme 'ubuntu t)
+    ;;        (load-theme 'doom-solarized-dark t)
 
 
-
-
-    ;; Enable flashing mode-line on errors
-    ;;(doom-themes-visual-bell-config)
-    ;; Enable custom neotree theme (all-the-icons must be installed!)
-    (doom-themes-neotree-config)
-    ;; or for treemacs users
-    ;;(setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
-    ;;(doom-themes-treemacs-config)
-    ;; Corrects (and improves) org-mode's native fontification.
-    ;;(doom-themes-org-config)
-    )
+            ;; Enable flashing mode-line on errors
+            (doom-themes-visual-bell-config)
+            ;; Enable custom neotree theme (all-the-icons must be installed!)
+            (doom-themes-neotree-config)
+            ;; or for treemacs users
+            (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+            (doom-themes-treemacs-config)
+            ;; Corrects (and improves) org-mode's native fontification.
+            (doom-themes-org-config)
+            )
 #+END_SRC
 
 ** Rainbow delemeters
@@ -290,8 +294,8 @@ Everything here is for evil mode, make sure this is good
 ** virtual terminal
 A vertual terminal for emacs, I find it better than eshell
 #+BEGIN_SRC elisp
-  ;; (use-package vterm
-  ;;  :ensure t)
+   (use-package vterm
+    :ensure t)
 #+END_SRC
 
 ** becom mode
@@ -345,6 +349,94 @@ use beacon mode, comment if you think it's annoyingj
   :ensure t)
 #+END_SRC
 
+** Elfeed
+*** this package is used to read RSS feeds
+#+BEGIN_SRC emacs-lisp
+  ;; Configure Elfeed
+  (use-package elfeed
+    :ensure t
+    :config
+    (setq elfeed-db-directory (expand-file-name "elfeed" user-emacs-directory)
+          elfeed-show-entry-switch 'display-buffer)
+
+    (setq elfeed-search-filter "@6-months-ago +unread -lowy")
+    )
+
+#+END_SRC
+
+*** use some RSS links
+#+BEGIN_SRC emacs-lisp
+  (setq elfeed-feeds (quote(
+  ("https://archlinux.org/feeds/news/" linux arch news official)
+  )))
+  ;; you can put your subs here like this
+#+END_SRC
+
+The way to get rss feed of a youtube channel
+NOTE: do not use this function directly in the elfeed-feeds list. This function has to first go to the internet and get the whole page and this function is not multithreaded. This function exists for me to get the RSS feeds of the youtube channels.
+This function just runs a shell command. The shell dependencies are curl and grep. They are available in almost all GNU/Linux systems. IDK and I dont care about other systems
+
+this function is defined below the elfeed-feeds list so that nobody uses this function within that list. This will make emacs really slow as it needs to connect to the internet and fetch it. *Don't directly put it in the list above.*
+#+BEGIN_SRC emacs-lisp
+  (defun my/get-youtube-channel-rss-feed (link-to-channel-homepage)
+    "this takes the link to channel home page and spits out the rss feed"
+    (setq my-youtube-command (concat "curl -s " link-to-channel-homepage " | grep -oP '(?<=title\=\"RSS\" href\=\").*?(?=\")' "))
+    (setq my-shell-output
+          (substring 
+           (shell-command-to-string my-youtube-command )
+           0 -1))
+    my-shell-output
+    )
+#+END_SRC
+
+*** disable evil mode for all elfeed major modes
+more mode hooks can be added when we find them
+#+BEGIN_SRC emacs-lisp
+  ;; (dolist (mode '(elfeed-show-mode-hook
+  ;;                 elfeed-search-mode-hook))
+  ;;   (add-hook mode (lambda () (turn-off-evil-mode))))
+#+END_SRC
+
+*** Elfeed functions
+play a video in mpv
+if the link of the opened elfeed is a video that can be played by mpv, this function can be used to directly play it.
+#+BEGIN_SRC emacs-lisp
+  (defun my/elfeed-open-link-in-mpv()
+    "open link in elfeed using mpv"
+    (interactive)
+    (let ((link (elfeed-entry-link elfeed-show-entry)))
+      (when link
+        (message "Sent to mpv: %s" link)
+        (async-shell-command (concat "mpv \"" link "\"")))))
+#+END_SRC
+
+*** make evil and elfeed play together
+this is copy pasted from the internet, the entire comment is following:
+
+I would suggest using evil-motion-state for Elfeed instead of normal state -- Elfeed buffers are read-only, so what you are really doing is moving around. Evil uses this approach for many other read-only buffers, for example help-mode. So:
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'evil-motion-state-modes 'elfeed-search-mode)
+  (add-to-list 'evil-motion-state-modes 'elfeed-show-mode)
+#+END_SRC
+
+You can rebind some keys to get back important Elfeed functionality. Some examples:
+
+#+BEGIN_SRC emacs-lisp
+  (evil-define-key* 'motion elfeed-search-mode-map
+    "gb" #'elfeed-search-browse-url
+    "gr" #'elfeed-search-update--force
+    "gR" #'elfeed-search-fetch)
+
+  (evil-define-key* 'motion elfeed-show-mode-map
+    "gb" #'elfeed-show-visit
+    "gy" #'my/elfeed-open-link-in-mpv
+    "gj" #'elfeed-show-next
+    "gk" #'elfeed-show-prev)
+#+END_SRC
+
+(I assume you are not using Spacemacs and don't have access to evilify-map, as suggested by another answer.)
+
 ** projectile
 projectile to move through projects blazingly fast
 #+BEGIN_SRC elisp
@@ -397,6 +489,14 @@ magit is a git client, people say it's really good so i'm planning to test it ou
     :ensure t)
 #+END_SRC
 
+** gnuplot mode
+this package is here just to support ploting in org mode, IDK how to use this package indipendently right now
+
+#+BEGIN_SRC emacs-lisp
+  (use-package gnuplot-mode)
+  (use-package gnuplot)
+#+END_SRC
+
 ** rainbow-mode
 #+BEGIN_SRC emacs-lisp
   (use-package rainbow-mode
@@ -404,16 +504,65 @@ magit is a git client, people say it's really good so i'm planning to test it ou
     :init (rainbow-mode 1))
 #+END_SRC
 
+** dashboard
+*** install dashboard
+
+#+BEGIN_SRC emacs-lisp
+  (use-package dashboard
+    :ensure t
+    :config
+    (dashboard-setup-startup-hook))
+#+END_SRC
+
+*** customize dashboard
+First make things be in the centre
+
+#+BEGIN_SRC emacs-lisp
+(setq dashboard-center-content t)
+#+END_SRC
+
+enable icons
+
+#+BEGIN_SRC emacs-lisp
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
+#+END_SRC
+
+using the dashboard mode hook
+
+- set keybinding to refresh when pressing *C-c C-r* key in dashboard
+- refresh once on startup to show icons ( there seems to be a bug here )
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'dashboard-mode-hook (lambda ()
+                                   (local-set-key (kbd "C-c C-r ") 'dashboard-refresh-buffer)))
+#+END_SRC
+
+*** make initial buffer for emacs client the dashboard
+
+#+BEGIN_SRC emacs-lisp
+(setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+#+END_SRC
+
+** all the icons dired
+all the icons for dired
+#+BEGIN_SRC emacs-lisp
+  (use-package all-the-icons-dired
+    :ensure t
+    :hook (dired-mode . all-the-icons-dired-mode)
+    )
+#+END_SRC
+
 * for LaTeX
 
 #+BEGIN_SRC elisp
-;; (use-package auctex
-;;   :ensure t
-;;   :defer t
-;;   :hook (LaTeX-mode .
-;; 		    (lambda ()
-;; 		      (push (list 'output-pdf "Zathura")
-;; 			    TeX-view-program-selection))))
+  (use-package auctex
+    :ensure t
+    :defer t
+    :hook (LaTeX-mode .
+                      (lambda ()
+                        (push (list 'output-pdf "Zathura")
+                              TeX-view-program-selection))))
 #+END_SRC
 
 * LSP
@@ -546,9 +695,20 @@ IDK how the hell this works, i just copied this. I just wish this works
   :ensure t)
 #+END_SRC
 
+** Add a function to set size for latex math equation size
+this function is an interactive function that makes setting the size of math equations more quality of life friendly.
+Now you won't have to go to that file where you stored the code every time you decide to write math equations
+
+#+BEGIN_SRC emacs-lisp
+  (defun my/set_latex_math_size (size)
+    "set the required size of your math equations"
+      (interactive "sSize:")
+      (setq org-format-latex-options (plist-put org-format-latex-options :scale (string-to-number size)))
+      (message (concat "size is set to: " size)))
+#+END_SRC
+
 * The Rust Programming Language
 while writing this, rust is my favouraite programming language. Even though LSP does most of the job, i still keep some more great rust features just because i like rust
-
 ** flycheck for rust
 checks for errors in the buffer
 #+BEGIN_SRC elisp
@@ -606,7 +766,7 @@ user defined functions (starts with my/)
     (evil-window-split)
     (evil-window-down 1)
     (evil-window-decrease-height 10)
-    (eshell)
+    (vterm)
     (neotree)
     (evil-window-right 1)
     (lsp)
@@ -654,28 +814,69 @@ repurposed the c mode keybinding to run shell scripts
                                                    )))
 #+END_SRC
 
-** open current directory the file is located in
-This is for quick nagivation
-#+BEGIN_SRC elisp
-  (defun my/open-current-folder()
-    "Open the folder your file currently is in"
-    (interactive)
-    (find-file "./")
-    )
-
-;; set keybinding for this
-  (global-set-key (kbd "C-x C-y") 'my/open-current-folder)
-
-#+END_SRC
-
-**  bracket completion in prog mode 
+** bracket completion in prog mode 
 Use electric pair mode or something in prog mode hook
 NOTE: Does not work rignt now, so not conna care
 #+BEGIN_SRC elisp
   (add-hook 'prog-mode-hook (lambda () (electric-pair-local-mode 1)))
 #+END_SRC
 
+** launch company mode every time in lisp mode
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'emacs-lisp-mode-hook (lambda ()
+                                    (company-mode 1)))
+#+END_SRC
+
+** put the cursor to the next <+_+> and replace it
+this is inspired from luke smith, it's in my opinion pretty cool
+
+first, the function my/goto-thing is defined
+#+BEGIN_SRC emacs-lisp
+(defun my/goto-thing ()
+  "put cursor to the string <+_+> and replace it"
+  (interactive)
+  (if (search-forward "<+_+>") (delete-backward-char 5) (message "pattern <+_+> not found"))
+  )
+#+END_SRC
+
+then, keybinding for it is set to C-c C-SPC
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c C-SPC") 'my/goto-thing)
+#+END_SRC
+
+** Insert math from within latex in emacs org mode
+this is so that i get better keybindings when working with latex in org mode.
+the trick was to open up a temp latex buffer and use keybinding from there
+and finally after I'm done there, pasting everything from there to org
+
+first we need the function to copy all of the buffer and kill it
+#+BEGIN_SRC emacs-lisp
+  (defun my/copy-all-and-kill()
+      (interactive)
+      (kill-region 1 (buffer-size))
+      (kill-buffer-and-window)
+    )
+#+END_SRC
+
+then, we need a function to open the latex buffer and set a keybinding to copy and kill
+#+BEGIN_SRC emacs-lisp
+  (defun my/open-latex-buffer ()
+    (interactive)
+    (split-window)
+    (switch-to-buffer "*org-latex-thingy*")
+    (latex-mode)
+    (local-set-key (kbd "C-C C-;") 'my/copy-all-and-kill ))
+#+END_SRC
+
+then we set a hook to put a keybinding in org mode to start the buffer
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-mode-hook (lambda()
+                             (local-set-key (kbd "C-c C-.") 'my/open-latex-buffer)))
+#+END_SRC
+
 ** other random stuff
+*** allow these mentioned languages to compile and give result from org source blocks
 #+BEGIN_SRC elisp
   (org-babel-do-load-languages
    'org-babel-load-languages
