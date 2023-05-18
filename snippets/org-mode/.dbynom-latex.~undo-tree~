@@ -1,0 +1,22 @@
+(undo-tree-save-format-version . 1)
+"f544af7752864c314cdea56f7257e5b64f2db3be"
+[nil nil nil nil (25579 37004 911484 905000) 0 nil]
+([nil nil ((apply yas--snippet-revive 1 47 #s(yas--snippet nil (#s(yas--field 1 33 33 nil (#s(yas--mirror 41 41 (yas--key-from-desc yas-text) #s(yas--field 2 41 41 nil nil nil nil #8) #s(yas--exit 47 nil) nil)) nil nil #s(yas--field 2 41 41 nil nil nil nil #s(yas--mirror 41 41 (yas--key-from-desc yas-text) #7 #s(yas--exit 47 nil) nil))) #s(yas--field 2 41 41 nil nil nil nil #s(yas--mirror 41 41 (yas--key-from-desc yas-text) #6 #s(yas--exit 47 nil) nil))) #s(yas--exit 47 nil) 70 nil #s(yas--field 1 33 33 nil (#s(yas--mirror 41 41 (yas--key-from-desc yas-text) #s(yas--field 2 41 41 nil nil nil nil #7) #s(yas--exit 47 nil) nil)) nil nil #s(yas--field 2 41 41 nil nil nil nil #s(yas--mirror 41 41 (yas--key-from-desc yas-text) #6 #s(yas--exit 47 nil) nil))) nil nil)) (apply yas--take-care-of-redo #s(yas--snippet nil (#s(yas--field 1 33 33 nil (#s(yas--mirror 41 41 (yas--key-from-desc yas-text) #s(yas--field 2 41 41 nil nil nil nil #8) #s(yas--exit 47 nil) nil)) nil nil #s(yas--field 2 41 41 nil nil nil nil #s(yas--mirror 41 41 (yas--key-from-desc yas-text) #7 #s(yas--exit 47 nil) nil))) #s(yas--field 2 41 41 nil nil nil nil #s(yas--mirror 41 41 (yas--key-from-desc yas-text) #6 #s(yas--exit 47 nil) nil))) #s(yas--exit 47 nil) 70 nil #s(yas--field 1 33 33 nil (#s(yas--mirror 41 41 (yas--key-from-desc yas-text) #s(yas--field 2 41 41 nil nil nil nil #7) #s(yas--exit 47 nil) nil)) nil nil #s(yas--field 2 41 41 nil nil nil nil #s(yas--mirror 41 41 (yas--key-from-desc yas-text) #6 #s(yas--exit 47 nil) nil))) nil nil)) (1 . 47)) nil (25579 37004 911483 729000) 0 nil])
+([nil nil ((36 . 45) (#("m" 0 1 (fontified t face font-lock-comment-face)) . -36) (undo-tree-id11 . -1) 37 (32 . 37)) nil (25579 37004 911482 163000) 0 nil])
+([nil nil ((54 . 61) (#("d" 0 1 (fontified t face font-lock-comment-face)) . -54) (undo-tree-id7 . -1) (#("b" 0 1 (fontified t face font-lock-comment-face)) . -55) (undo-tree-id8 . -1) (#("y" 0 1 (fontified t face font-lock-comment-face)) . -56) (undo-tree-id9 . -1) 57 (54 . 57) (#(" " 0 1 (fontified t face font-lock-comment-face)) . -54) (undo-tree-id10 . -1) 55 (54 . 55)) nil (25579 37004 911479 533000) 0 nil])
+([nil nil ((67 . 73) (66 . 67)) nil (25579 37004 911474 372000) 0 nil])
+([nil nil ((#("
+" 0 1 (fontified t)) . -73) (undo-tree-id5 . -1) (#("i" 0 1 (fontified t)) . -74) (undo-tree-id6 . -1) 75 (74 . 75) (73 . 74) 72) nil (25579 37004 911472 722000) 0 nil])
+([nil nil ((67 . 68)) nil (25579 37004 911469 734000) 0 nil])
+([nil nil ((#("}" 0 1 (fontified nil)) . -75) (75 . 76) (#("}" 0 1 (fontified nil face (rainbow-delimiters-depth-1-face))) . -75) (75 . 76) (74 . 76)) nil (25579 37004 911468 370000) 0 nil])
+([nil nil ((#("}" 0 1 (fontified nil)) . -77) (77 . 78) (#("}" 0 1 (fontified nil face (rainbow-delimiters-depth-1-face))) . -77) (77 . 78) (76 . 78)) nil (25579 37004 911466 81000) 0 nil])
+([nil nil ((75 . 77)) nil (25579 37004 911464 421000) 0 nil])
+([nil nil ((#("}" 0 1 (fontified nil)) . -78) (78 . 79) (#("}" 0 1 (fontified nil face (rainbow-delimiters-depth-2-face))) . -78) (78 . 79) (77 . 79) (#("1" 0 1 (fontified t face font-lock-string-face)) . -77) (undo-tree-id4 . -1) 78 (76 . 78)) nil (25579 37004 911463 11000) 0 nil])
+([nil nil ((78 . 81)) nil (25579 37004 911460 121000) 0 nil])
+([nil nil ((#("}" 0 1 (fontified nil)) . -88) (88 . 89) (#("}" 0 1 (fontified nil face (rainbow-delimiters-depth-2-face))) . -88) (88 . 89) (85 . 89)) nil (25579 37004 911458 24000) 0 nil])
+([nil nil ((89 . 91) (88 . 89)) nil (25579 37004 911455 976000) 0 nil])
+([nil nil ((92 . 93)) nil (25579 37004 911454 685000) 0 nil])
+([nil nil ((94 . 97)) nil (25579 37004 911453 519000) 0 nil])
+([nil current ((#("
+" 0 1 (fontified t)) . -97) (undo-tree-id0 . -1) (undo-tree-id1 . 1) (undo-tree-id2 . -1) (undo-tree-id3 . -1) 98) nil (25579 37004 911448 692000) 0 nil])
+nil

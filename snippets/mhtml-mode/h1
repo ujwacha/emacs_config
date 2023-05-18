@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: h1
+# key: :h1
+# --
+
+<h1 ${1:properties}> $0 </h1>

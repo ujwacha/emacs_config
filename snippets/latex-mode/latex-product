@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: Pi product latex
+# key: :pro
+# --
+\prod_{ ${1:lower} }^{ ${2:upper} } { $0 }

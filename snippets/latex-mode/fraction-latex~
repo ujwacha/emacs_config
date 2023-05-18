@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: fractions latex 
+# key: :fra
+# --
+\frac{ ${1:<+_+>} }{ ${2:<+_+>} } ${0:<+_+>}

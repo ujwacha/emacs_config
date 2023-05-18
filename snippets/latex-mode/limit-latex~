@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: limit lates
+# key: :lim
+# --
+\lim_{ ${1:x} \to ${2:value} } {$0}

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: big pipe
+# key: :|
+# --
+\Big|_{ ${0:<+_+>} }^{ ${0:<+_+>} }

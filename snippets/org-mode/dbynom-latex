@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: dbynom latex 
+# key: \dbynom
+# --
+\dbinom{ ${1:n} }{ ${2:k} } $0

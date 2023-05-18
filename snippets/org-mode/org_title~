@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: org title 
+# key: <t
+# --
+
+#+TITLE: ${1:title}
+#+Author: Acharya U
+#+PROPERTY: ${2:properties}
+
+$0
+

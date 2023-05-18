@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: function
+# key: :fn
+# --
+
+${1:int} ${2:func}(${3:args}) {
+    $0
+}

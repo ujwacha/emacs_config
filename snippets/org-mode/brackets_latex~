@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: brackets latex
+# key: :bra
+# --
+\left $0 \right

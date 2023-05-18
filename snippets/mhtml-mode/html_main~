@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: Html main
+# key: <h
+# --
+
+<html>
+	<head>
+		<title> ${1:title} </title>
+		${2:other content}
+	</head>
+
+	<body>
+		$0
+	</body>
+</html>

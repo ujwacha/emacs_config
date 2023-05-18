@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: normal math section 
+# key: m> 
+# --
+\begin{math}
+$0
+\end{math}

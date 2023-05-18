@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: latex integral 
+# key: :int
+# --
+\int_{${1:lower limit}}^{${2:upper limit}} $0 \ d$3

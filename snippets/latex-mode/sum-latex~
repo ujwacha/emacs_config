@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: sum latex
+# key: :sum
+# --
+\sum_{${1:lower}}^{${2:upper}} $0

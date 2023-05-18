@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: ok or error
+# key: <oe>
+# --
+
+OK(t) => t,
+Err(t) => {
+    eprintln!("[-]ERROR: {t}");
+    panic!();
+},
